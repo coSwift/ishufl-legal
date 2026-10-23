@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><meta name="theme-color" content="#2f9bff"><title>iShufl: a radio station for you</title><link rel="stylesheet" href="assets/styles.css"></head>
+  <body data-page="station">
+    <header class="site-header"><nav class="container nav"><a class="brand" href="index.html" data-app-name>iShufl</a><div class="nav-links"><a href="privacy.html">Privacy</a><a href="support.html">Support</a></div></nav></header>
+    <main class="container">
+      <section class="hero">
+        <div class="eyebrow">A radio station was shared with you</div>
+        <h1 id="station-name">A radio station</h1>
+        <p id="station-note">Opening it in iShufl&hellip;</p>
+        <div class="actions">
+          <a class="button button-primary" id="open-app" href="#">Open in iShufl</a>
+          <a class="button button-secondary" id="download" href="index.html" hidden>Get iShufl</a>
+        </div>
+      </section>
+    </main>
+    <footer class="site-footer"><div class="container footer-row"><span>&copy; <span data-developer-name>Jack Swift</span></span><span><a data-support-email href="mailto:swiftdevco@proton.me">swiftdevco@proton.me</a></span></div></footer>
+    <script src="assets/config.js"></script><script src="assets/site.js"></script>
+    <script>
+      (function () {
+        var params = new URLSearchParams(location.search);
+        var id = params.get("id") || "";
+        var name = params.get("name") || "";
+        var valid = /^[0-9a-fA-F-]{36}$/.test(id);
+        if (name) document.getElementById("station-name").textContent = name.slice(0, 80);
+        var config = window.APP_CONFIG || {};
+        var download = document.getElementById("download");
+        if (config.appStoreUrl && config.appStoreUrl !== "#") download.href = config.appStoreUrl;
+        var open = document.getElementById("open-app");
+        if (!valid) {
+          document.getElementById("station-note").textContent = "This link is missing its station.";
+          open.hidden = true; download.hidden = false;
+          return;
+        }
+        var link = "ishufl://station?id=" + encodeURIComponent(id);
+        open.href = link;
+        // With iShufl installed, iOS asks to open it and the page goes to the background. Without it, nothing happens, so the
+        // download button appears after a moment.
+        window.location.href = link;
+        setTimeout(function () {
+          if (!document.hidden) {
+            document.getElementById("station-note").textContent = "Don't have iShufl yet? Get it, then open this link again to add the station to your favorites.";
+            download.hidden = false;
+          }
+        }, 1800);
+      })();
+    </script>
+  </body>
+</html>
